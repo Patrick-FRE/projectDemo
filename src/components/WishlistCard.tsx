@@ -1,27 +1,19 @@
 import React from 'react';
+import Book from '../model/Book';
 
-interface IProps {
-  book: {
-    title: string;
-    authors: string[];
-    description: string;
-    publisher: string;
-    publishedDate: string;
-    imageLinks: {
-      smallThumbnail: string;
-      thumbnail: string;
-    };
-  };
-  removeBookFromWishlist: (book: any) => void;
+interface WishlistProps {
+  book: Book;
+  removeBookFromWishlist: (book: Book) => void;
 }
 
-const WishlistCard = (props: IProps) => {
+const WishlistCard = (props: WishlistProps) => {
   const { book, removeBookFromWishlist } = props;
   return (
     <div className="wishlist-card">
       <div>{book.title} </div>
       <div className="wishlist-card-close">
         <a
+          href="!#"
           className="close-button"
           onClick={() => {
             removeBookFromWishlist(book);

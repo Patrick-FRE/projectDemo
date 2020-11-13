@@ -1,47 +1,37 @@
 import React from 'react';
+import Book from '../model/Book';
 
-interface IProps {
-  book: {
-    title: string;
-    authors: string[];
-    description: string;
-    publisher: string;
-    publishedDate: string;
-    imageLinks: {
-      smallThumbnail: string;
-      thumbnail: string;
-    };
-  };
+interface BookCardProps {
+  book: Book;
+  isAdded: boolean;
 
-  added: boolean;
-
-  addBookToWishlist: (book: any) => void;
+  addBookToWishlist: (book: Book) => void;
 }
 
-const Card = (props: IProps) => {
-  const { book, addBookToWishlist, added } = props;
+const Card = (props: BookCardProps) => {
+  const { book, addBookToWishlist, isAdded } = props;
 
   return (
-    <div className="book">
+    <article className="book">
       <div className="book__cover">
         {book.imageLinks && (
           <img src={book.imageLinks.thumbnail} alt={book.title} />
         )}
       </div>
-      <p>{book.title}</p>
+      <header className="book__header">{book.title}</header>
       {book.authors && <p>{book.authors.join(',')}</p>}
-      <p>{book.publisher}</p>
-      <p>{book.publishedDate}</p>
-      <p>{book.description}</p>
+      <p className="book__publisher">{(book.publisher ? book.publisher : 'unknown') + ', ' + book.publishedDate}</p>
+      <p className="book__description">{book.description}</p>
       <button
-        disabled={added}
+       className="book__btn-add"
+        disabled={isAdded}
         onClick={() => {
           addBookToWishlist(book);
         }}
       >
-        {added ? 'Added to wishlist' : 'Add to wishlist'}
+        {isAdded ? 'Added to wishlist' : 'Add to wishlist'}
       </button>
-    </div>
+    </article>
   );
 };
 

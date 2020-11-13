@@ -1,3 +1,8 @@
+/**
+ * Debounce a function
+ * @param func the function to debounce
+ * @param wait interval for function execution
+ */
 const debounce = (func: any, wait: number) => {
   let timeout: any;
 

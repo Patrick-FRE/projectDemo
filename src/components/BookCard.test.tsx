@@ -22,24 +22,23 @@ const mockData = {
 describe('BookCard', () => {
   it('should render properly', () => {
     const stub = jest.fn();
-    render(<BookCard added={false} book={mockData} addBookToWishlist={stub} />);
+    render(<BookCard isAdded={false} book={mockData} addBookToWishlist={stub} />);
 
     expect(screen.getByText(mockData.title)).toBeVisible();
     expect(screen.getByText(mockData.authors.join(','))).toBeVisible();
-    expect(screen.getByText(mockData.publishedDate)).toBeVisible();
     expect(screen.getByText(mockData.description)).toBeVisible();
   });
 
   it('should have a button to click', () => {
     const stub = jest.fn();
-    render(<BookCard added={false} book={mockData} addBookToWishlist={stub} />);
+    render(<BookCard isAdded={false} book={mockData} addBookToWishlist={stub} />);
     fireEvent.click(screen.getByText('Add to wishlist'));
     expect(stub).toHaveBeenCalledTimes(1);
   });
 
   it('should disable the button when is added to wishlist', () => {
     const stub = jest.fn();
-    render(<BookCard added={true} book={mockData} addBookToWishlist={stub} />);
+    render(<BookCard isAdded={true} book={mockData} addBookToWishlist={stub} />);
 
     expect(screen.getByText('Added to wishlist')).toBeDisabled();
 

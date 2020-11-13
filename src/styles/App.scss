@@ -123,10 +123,27 @@ form {
   width: 100%;
 }
 .book {
-  border: 1px solid silver;
-  margin-top: .5rem;
+  width: 100%;
+  padding: $book-padding;
+  border: $book-border;
+  margin-top: $book-margin-top; 
+
   button {
     margin: 0 0 5px 5px;
+  }
+
+  &__publisher {
+    font-size: 0.8rem;
+    color: gray80;
+  }
+
+  &__description {
+    font-size: 0.9rem;
+  }
+
+  &__btn-add {
+    margin: 0 0 5px 5px;
+    padding: 5px 10px;
   }
 }
 .book--container {

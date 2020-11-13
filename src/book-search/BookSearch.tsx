@@ -1,26 +1,32 @@
 import React, { useEffect, useState } from 'react';
 import BookCard from '../components/BookCard';
 import WishlistCard from '../components/WishlistCard';
+import Book from '../model/Book';
 import { debounce } from '../utils';
 import { getBooksByType } from './book-search.service';
 
 const BookSearch = () => {
   const [bookType, updateBookType] = useState('');
   const [bookTypeToSearch, updateBookTypeToSearch] = useState('');
-  const [allAvailableBooks, setAllAvailableBooks] = useState([]);
-  const [wishlistBooks, setWishlistBooks] = useState<any>([]);
+  const [allAvailableBooks, setAllAvailableBooks] = useState<Book[]>([]);
+  const [wishlistBooks, setWishlistBooks] = useState<Book[]>([]);
+  // loading state
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const debounceOnChange = React.useCallback(
+  // debounce api calll to prevent sending too many api calls to server
+  const debounceApiCall = React.useCallback(
     debounce(requestBooksByBookType, 200),
     []
   );
 
   async function requestBooksByBookType(b: any) {
     if (b) {
+      setLoading(true);
       const allBooks = await getBooksByType(b);
       setAllAvailableBooks(
         allBooks.items.map((item: any) => ({ id: item.id, ...item.volumeInfo }))
       );
+      setLoading(false);
     }
   }
 
@@ -31,7 +37,11 @@ const BookSearch = () => {
     getAllBooks();
   }, [bookTypeToSearch]);
 
-  const addBookToWishList = (book: any) => {
+  /**
+   * Add book to wishlist state
+   * @param book book to be added to wishlist
+   */
+  const addBookToWishList = (book: Book) => {
     setWishlistBooks((prev: any) => {
       if (prev.findIndex((b: any) => b.id === book.id) !== -1) {
         return [...prev];
@@ -41,7 +51,11 @@ const BookSearch = () => {
     });
   };
 
-  const removeBookFromWishList = (book: any) => {
+  /**
+   *  Remove a given book from wishlist state
+   * @param book book to be removed from wishlist
+   */
+  const removeBookFromWishList = (book: Book) => {
     setWishlistBooks((prev: any) => {
       return [...prev.filter((b: any) => b.id !== book.id)];
     });
@@ -51,7 +65,7 @@ const BookSearch = () => {
     const value = e.target.value;
 
     updateBookType(value);
-    debounceOnChange(value);
+    debounceApiCall(value);
   };
 
   return (
@@ -82,6 +96,7 @@ const BookSearch = () => {
               <p>
                 Try searching for a topic, for example
                 <a
+                  href="!#"
                   onClick={() => {
                     updateBookType('Javascript');
                   }}
@@ -92,13 +107,14 @@ const BookSearch = () => {
               </p>
             </div>
           )}
-          {allAvailableBooks.length > 0 && (
+          {loading && <h2>Loading...</h2>}
+          {allAvailableBooks.length > 0 && !loading && bookType && (
             <div className="books">
               {allAvailableBooks.map((book: any) => (
                 <BookCard
                   key={book.id}
                   book={book}
-                  added={
+                  isAdded={
                     wishlistBooks.findIndex((b: any) => b.id === book.id) !== -1
                   }
                   addBookToWishlist={addBookToWishList}

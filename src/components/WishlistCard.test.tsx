@@ -34,5 +34,4 @@ describe('WishlistCard', () => {
     fireEvent.click(screen.getByText('x'));
     expect(stub).toHaveBeenCalledTimes(1);
   });
-
 });
