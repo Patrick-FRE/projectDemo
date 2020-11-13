@@ -102,6 +102,19 @@ main {
   color: $gray40;
 }
 
+.books {
+  display: flex;
+  width: 100%;
+  flex-flow: row wrap;
+  // text-align: center;
+  // align-items: center;
+  justify-content: space-between;
+}
+
+.book__cover {
+  width: 100%;
+}
+
 form {
   margin-bottom: $spacing-xs;
 }
@@ -112,6 +125,9 @@ form {
 .book {
   border: 1px solid silver;
   margin-top: .5rem;
+  button {
+    margin: 0 0 5px 5px;
+  }
 }
 .book--container {
   display: flex;
@@ -122,9 +138,29 @@ form {
 
 .search-params {
   flex-grow: 3;
+  flex-basis: 0;
+  align-items: center;  
 
 }
+
 .sidebar {
   flex-grow: 1;
+  display: flex;
+  justify-content: space-evenly;
+}
 
+a.close-button {
+  text-decoration: none;
+  color: black;
+}
+
+.wishlist-card {
+  display: flex;
+  flex: 0 0 100;
+  flex-direction: row;
+  padding-top: 5px;
+}
+
+.wishlist-card-close {
+  margin-left: auto;
 }
