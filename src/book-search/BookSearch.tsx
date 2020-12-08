@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, SyntheticEvent, ChangeEvent } from 'react';
 import BookCard from '../components/BookCard';
 import WishlistCard from '../components/WishlistCard';
 import Book from '../model/Book';
@@ -10,19 +10,32 @@ const BookSearch = () => {
   const [bookTypeToSearch, updateBookTypeToSearch] = useState('');
   const [allAvailableBooks, setAllAvailableBooks] = useState<Book[]>([]);
   const [wishlistBooks, setWishlistBooks] = useState<Book[]>([]);
+  const [pageInfo, setPageInfo] = useState({
+    pageSize: 1,
+    startIndex: 0,
+  });
   // loading state
   const [loading, setLoading] = useState<boolean>(false);
 
   // debounce api calll to prevent sending too many api calls to server
+  // const debounceApiCall = React.useCallback(
+  //   debounce(requestBooksByBookType, 200),
+  //   []
+  // );
   const debounceApiCall = React.useCallback(
-    debounce(requestBooksByBookType, 200),
+    debounce(updateBookTypeToSearch, 1000),
     []
   );
 
-  async function requestBooksByBookType(b: any) {
-    if (b) {
+  async function requestBooksByBookType(pageSize: number, startIndex: number) {
+    if (bookTypeToSearch) {
       setLoading(true);
-      const allBooks = await getBooksByType(b);
+      const allBooks = await getBooksByType(
+        bookTypeToSearch,
+        pageSize,
+        startIndex
+      );
+      console.log(allBooks);
       setAllAvailableBooks(
         allBooks.items.map((item: any) => ({ id: item.id, ...item.volumeInfo }))
       );
@@ -30,12 +43,42 @@ const BookSearch = () => {
     }
   }
 
+  async function loadMoreBooksByType(pageSize: number, startIndex: number) {
+    if (bookTypeToSearch) {
+      setLoading(true);
+      const allBooks = await getBooksByType(
+        bookTypeToSearch,
+        pageSize,
+        startIndex
+      );
+      console.log(allBooks);
+      setAllAvailableBooks((preBook) => {
+        return [
+          ...preBook,
+          ...allBooks.items.map((item: any) => ({
+            id: item.id,
+            ...item.volumeInfo,
+          })),
+        ];
+      });
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    setPageInfo({
+      pageSize: 1,
+      startIndex: 0,
+    });
+    setAllAvailableBooks([]);
+  }, [bookTypeToSearch]);
+
   useEffect(() => {
     async function getAllBooks() {
-      await requestBooksByBookType(bookTypeToSearch);
+      await loadMoreBooksByType(pageInfo.pageSize, pageInfo.startIndex);
     }
     getAllBooks();
-  }, [bookTypeToSearch]);
+  }, [pageInfo]);
 
   /**
    * Add book to wishlist state
@@ -61,7 +104,7 @@ const BookSearch = () => {
     });
   };
 
-  const handleInputChange = (e: any) => {
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
 
     updateBookType(value);
@@ -86,11 +129,22 @@ const BookSearch = () => {
               type="search"
               value={bookType}
               placeholder="Search for books to add to your reading list and press Enter"
-              onChange={(e) => {
-                handleInputChange(e);
-              }}
+              onChange={handleInputChange}
             />
           </form>
+          <button
+            onClick={() => {
+              setPageInfo((prePageInfo) => {
+                return {
+                  ...prePageInfo,
+                  startIndex: prePageInfo.startIndex + prePageInfo.pageSize,
+                  firstCall: false,
+                };
+              });
+            }}
+          >
+            Load more
+          </button>
           {!bookType && allAvailableBooks.length === 0 && (
             <div className="empty">
               <p>
@@ -109,7 +163,7 @@ const BookSearch = () => {
           )}
           {loading && <h2>Loading...</h2>}
           {allAvailableBooks.length > 0 && !loading && bookType && (
-            <div className="books">
+            <div className="book-card-container">
               {allAvailableBooks.map((book: any) => (
                 <BookCard
                   key={book.id}

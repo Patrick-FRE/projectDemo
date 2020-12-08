@@ -1,12 +1,14 @@
 @import './variables';
 
 * {
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
 }
 
 body {
   font-family: -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto,
-  'Helvetica Neue', Arial, sans-serif;
+    'Helvetica Neue', Arial, sans-serif;
 }
 
 h1,
@@ -102,17 +104,12 @@ main {
   color: $gray40;
 }
 
-.books {
+.book-card-container {
   display: flex;
   width: 100%;
-  flex-flow: row wrap;
-  // text-align: center;
-  // align-items: center;
+  flex-wrap: wrap;
+  align-items: stretch;
   justify-content: space-between;
-}
-
-.book__cover {
-  width: 100%;
 }
 
 form {
@@ -122,42 +119,73 @@ form {
 .full-width {
   width: 100%;
 }
-.book {
-  width: 100%;
-  padding: $book-padding;
-  border: $book-border;
-  margin-top: $book-margin-top; 
+  .book-card {
+    width: 280px;
+    padding: 5px;
+    border: 1px solid gray;
+    margin-top: 20px;
 
-  button {
-    margin: 0 0 5px 5px;
-  }
+    &__header {
+      font-size: 0.8rem;
+      vertical-align: text-top;
+      display: flex;
 
-  &__publisher {
-    font-size: 0.8rem;
-    color: gray80;
-  }
+      .book-card__cover {
+        display: inline-block;
+        border: 1px solid gray;
+        margin-right: 10px;
+        img {
+          width: 100px;
+          object-fit: cover;
+        }
+      }
 
-  &__description {
-    font-size: 0.9rem;
-  }
+      .book-card__info {
+        .book-card__title {
+          width: 100%;
+          display: inline-block;
+          height: 32px;
+          font-weight: bold;
+          margin-bottom: 5px;
+          overflow: hidden;
+        }
 
-  &__btn-add {
-    margin: 0 0 5px 5px;
-    padding: 5px 10px;
+        .book-card__author {
+          width: 100%;
+
+          margin-bottom: 5px;
+          display: inline-block;
+          height: 30px;
+          overflow: hidden;
+        }
+        .book-card__publisher {
+          width: 100%;
+
+          color: gray;
+          height: 30px;
+          overflow: hidden;
+          margin-bottom: 5px;
+        }
+        .btn-add-wishlist {
+          padding: 3px 5px;
+        }
+      }
+    }
+    &__description {
+      font-size: 0.5rem;
+    }
   }
-}
 .book--container {
   display: flex;
   flex-flow: row nowrap;
-  justify-content:space-around;
+  justify-content: space-around;
   align-items: stretch;
 }
 
 .search-params {
   flex-grow: 3;
   flex-basis: 0;
-  align-items: center;  
-
+  align-items: center;
 }
 
 .sidebar {
